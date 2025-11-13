@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bankapp-deploy
+  namespace: bankapp-namespace
+  labels:
+    app: bankapp
+spec:
+  replicas: 1  # Keep replicas >= 2 for high availability
+  selector:
+    matchLabels:
+      app: bankapp
+  template:
+    metadata:
+      labels:
+        app: bankapp
+    spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.28
+          command: ['sh', '-c', 'until nc -z mysql-headless 3306; do echo waiting for mysql; sleep 2; done']
+      containers:
+        - name: bankapp
+          image: trainwithshubham/bankapp-eks:v2
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bankapp-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bankapp-config
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: bankapp-config
+                  key: MYSQL_DATABASE
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret     # match your Secret name
+                  key: SPRING_DATASOURCE_PASSWORD
+
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health
+#              port: 8080
+#            initialDelaySeconds: 30
+#            periodSeconds: 10
+#
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/health
+#              port: 8080
+#            initialDelaySeconds: 10
+#            periodSeconds: 5
+
+#          resources:
+#            requests:
+#              memory: "512Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "1Gi"
+#              cpu: "500m"
+
+
