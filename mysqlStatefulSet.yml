@@ -37,6 +37,7 @@ spec:
               mountPath: /var/lib/mysql
 
           # --- Fixed liveness and readiness probes ---
+#Checks if the container is actually alive or stuck.
           livenessProbe:
             exec:
               command:
@@ -49,6 +50,7 @@ spec:
             periodSeconds: 10
             failureThreshold: 6
 
+#Checks if the container is ready to receive traffic.
           readinessProbe:
             exec:
               command:
