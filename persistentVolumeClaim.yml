@@ -11,4 +11,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: manual 
+  storageClassName: manual   # manual is just the name of the storage class it can be any thing and it should match with PV,
+                             # manual means we are crateing it manually , we can use an existing dynamic StorageClass(ex standard,gp2) if we want k8s to auto-create PV
+                             # To know your available options: kubectl get storageclass
