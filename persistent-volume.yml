@@ -7,7 +7,7 @@ spec:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Retain  #If the PVC that is using this PV gets deleted, the PV and the data inside it will NOT be deleted.
   storageClassName: manual
   hostPath:
     path: /tmp/bankapp-mysql
