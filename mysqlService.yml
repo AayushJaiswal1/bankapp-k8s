@@ -6,7 +6,7 @@ metadata:
   labels:
     app: mysql
 spec:
-  clusterIP: None   # headless, required for StatefulSet
+  clusterIP: None   # headless, required for StatefulSet # ClusterIP->none, pods are exposed individually via DNS StatefulSet requires stable DNS names per pod. Databases like MySQL, MongoDB, Kafka, Redis need to reach specific peers, not random ones.
   selector:
     app: mysql
   ports:
